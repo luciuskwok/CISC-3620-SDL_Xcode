@@ -120,9 +120,6 @@ void draw_centered_rect(int x, int y, int w, int h, uint32_t color) {
 }
 
 void update_state(void) {
-    // Clear frame buffer
-    clear_screen(0x000000FF);
-
     // Time variable
     float t = (float)(frame_index % 480) / 480.0f;
 
@@ -154,6 +151,26 @@ void update_state(void) {
 
     // Update frame index
     frame_index++;
+}
+
+void run_render_pipeline(void) {
+    // Clear frame buffer
+    clear_screen(0x000000FF);
+
+    // Draw a 5x5 rect at every projected point
+    project_model();
+    for (int i = 0; i < CUBE_POINT_COUNT; i++) {
+        vec2_t pt = projected_points[i];
+        int cx = pixels_w / 2;
+        int cy = pixels_h / 2;
+        uint32_t color = 0xFFFFFFFF; // white color
+        draw_centered_rect(cx + (int)pt.x, cy + (int)pt.y, 5, 5, color);
+    }
+
+    // Render frame buffer
+    SDL_UpdateTexture(texture, NULL, pixels, pixels_w * sizeof(uint32_t));
+    SDL_RenderCopy(renderer, texture, NULL, &window_rect);
+    SDL_RenderPresent(renderer);
 }
 
 bool initialize_windowing_system(void) {
@@ -286,23 +303,6 @@ void process_keyboard_input(void) {
         }
         break;
     }
-}
-
-void run_render_pipeline(void) {
-    // Draw a 5x5 rect at every projected point
-    project_model();
-    for (int i = 0; i < CUBE_POINT_COUNT; i++) {
-        vec2_t pt = projected_points[i];
-        int cx = pixels_w / 2;
-        int cy = pixels_h / 2;
-        uint32_t color = 0xFFFFFFFF; // white color
-        draw_centered_rect(cx + (int)pt.x, cy + (int)pt.y, 5, 5, color);
-    }
-
-    // Render frame buffer
-    SDL_UpdateTexture(texture, NULL, pixels, pixels_w * sizeof(uint32_t));
-    SDL_RenderCopy(renderer, texture, NULL, &window_rect);
-    SDL_RenderPresent(renderer);
 }
 
 int main(int argc, char* argv[]) {

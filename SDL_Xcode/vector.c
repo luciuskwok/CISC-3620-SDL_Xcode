@@ -123,32 +123,32 @@ void mat4_scale(mat4_t m, float sx, float sy, float sz) {
 }
 
 void mat4_pitch(mat4_t m, float a) {
-	mat4_t r = {
-		cosf(a), 0, sinf(a), 0,
-		0, 1, 0, 0,
-		-sinf(a), 0, cosf(a), 0,
-		0, 0, 0, 1
-	};
+    mat4_t r = {
+        1, 0, 0, 0,
+        0, cosf(a), -sinf(a), 0,
+        0, sinf(a), cosf(a), 0,
+        0, 0, 0, 1
+    };
 	mat4_multiply(m, r, m);
 }
 
 void mat4_roll(mat4_t m, float a) {
-	mat4_t r = {
-		1, 0, 0, 0,
-		0, cosf(a), -sinf(a), 0,
-		0, sinf(a), cosf(a), 0,
-		0, 0, 0, 1
-	};
+    mat4_t r = {
+        cosf(a), -sinf(a), 0, 0,
+        sinf(a), cosf(a), 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    };
 	mat4_multiply(m, r, m);
 }
 
 void mat4_yaw(mat4_t m, float a) {
-	mat4_t r = {
-		cosf(a), -sinf(a), 0, 0,
-		sinf(a), cosf(a), 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1
-	};
+    mat4_t r = {
+         cosf(a), 0, sinf(a), 0,
+         0, 1, 0, 0,
+         -sinf(a), 0, cosf(a), 0,
+         0, 0, 0, 1
+     };
 	mat4_multiply(m, r, m);
 }
 
