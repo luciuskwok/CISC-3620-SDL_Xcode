@@ -212,7 +212,7 @@ bool initialize_windowing_system(void) {
         return false;
     }
     clear_screen(0x000000FF);
-
+    
     // Set up the renderer
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 0); // Use no interpolation
     // Clear the window
@@ -312,7 +312,6 @@ int main(int argc, char* argv[]) {
     yaw = 0;
 
     // Game loop
-    const bool wasteCycles = false;
     uint32_t startTime, ticks;
     is_running = true;
     while (is_running) {
@@ -324,23 +323,15 @@ int main(int argc, char* argv[]) {
         update_state();
         run_render_pipeline();
 
-        if (wasteCycles) {
-            while (SDL_GetTicks() - startTime < FRAME_TARGET_TIME) {
-                // waste CPU cycles
-                // Explanation: Task Manager shows about 24% CPU usage because I have a 4-core CPU,
-                // and this code is only a single thread, only one core is running close to 100%.
-            }
-        } else {
-            // Delay to get to target frame time
-            ticks = SDL_GetTicks() - startTime;
-            if (ticks < FRAME_TARGET_TIME) {
-                SDL_Delay(FRAME_TARGET_TIME - ticks);
-            }
-            // Explanation: Task Manager shows about 14% CPU usage, indicating that the delay is more
-            // efficient for CPU usage, but not dramatically so. This code counts the number of ticks
-            // that the code takes to do everything in its game loop, and subtracts that from the
-            // target frame time, so that the total time between each frame is about the same.
+        // Delay to get to target frame time
+        ticks = SDL_GetTicks() - startTime;
+        if (ticks < FRAME_TARGET_TIME) {
+            SDL_Delay(FRAME_TARGET_TIME - ticks);
         }
+        // Explanation: Task Manager shows about 14% CPU usage, indicating that the delay is more
+        // efficient for CPU usage, but not dramatically so. This code counts the number of ticks
+        // that the code takes to do everything in its game loop, and subtracts that from the
+        // target frame time, so that the total time between each frame is about the same.
     }
 
     clean_up_windowing_system();
