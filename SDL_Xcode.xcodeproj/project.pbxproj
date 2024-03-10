@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E06F94522B9D396F00155222 /* vector.c in Sources */ = {isa = PBXBuildFile; fileRef = E06F94512B9D396F00155222 /* vector.c */; };
 		E09C6ED92B69FE8B005CA008 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E09C6ED82B69FE8B005CA008 /* main.c */; };
 		E09C6EED2B6A0A20005CA008 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E09C6EEC2B6A0A20005CA008 /* SDL2.framework */; };
 		E0BD5D082B6AE089003EFAEA /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E09C6EEC2B6A0A20005CA008 /* SDL2.framework */; };
@@ -26,6 +27,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E06F94512B9D396F00155222 /* vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vector.c; sourceTree = "<group>"; };
 		E09C6ED52B69FE8B005CA008 /* SDL_Xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SDL_Xcode; sourceTree = BUILT_PRODUCTS_DIR; };
 		E09C6ED82B69FE8B005CA008 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		E09C6EE82B6A03D0005CA008 /* SDL_Xcode.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SDL_Xcode.entitlements; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 			children = (
 				E09C6EE82B6A03D0005CA008 /* SDL_Xcode.entitlements */,
 				E09C6ED82B69FE8B005CA008 /* main.c */,
+				E06F94512B9D396F00155222 /* vector.c */,
 			);
 			path = SDL_Xcode;
 			sourceTree = "<group>";
@@ -105,7 +108,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					E09C6ED42B69FE8B005CA008 = {
 						CreatedOnToolsVersion = 15.2;
@@ -135,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E06F94522B9D396F00155222 /* vector.c in Sources */,
 				E09C6ED92B69FE8B005CA008 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -176,6 +180,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -237,6 +242,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -263,6 +269,7 @@
 				CODE_SIGN_ENTITLEMENTS = SDL_Xcode/SDL_Xcode.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NVBY6KRZL2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -281,6 +288,7 @@
 				CODE_SIGN_ENTITLEMENTS = SDL_Xcode/SDL_Xcode.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NVBY6KRZL2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
