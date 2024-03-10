@@ -44,4 +44,4 @@ void mat4_yaw(mat4_t m, float a);
 void mat4_multiply(const mat4_t a, const mat4_t b, mat4_t result);
 vec3_t vec3_mat4_multiply(const vec3_t a, const mat4_t m);
 
-#endif
+#endif /* VECTOR_H */

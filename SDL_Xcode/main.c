@@ -8,6 +8,8 @@
 #include <SDL2/SDL.h>
 
 #include "vector.h"
+#include "mesh.h"
+
 
 #define M_PI_F ((float)(M_PI))
 #define M_PI_2_F ((float)(M_PI * 2.0))
@@ -28,10 +30,11 @@ int animation_mode;
 // Global state for rendering
 uint32_t frame_index;
 
-// Globals for cube
-#define CUBE_POINT_COUNT (9*9*9)
-vec3_t cube_model[CUBE_POINT_COUNT];
-vec2_t projected_points[CUBE_POINT_COUNT];
+// Globals for projection
+const int point_count = 8;
+vec2_t projected_points[point_count];
+
+// Transform
 mat3_t transform_2d;
 mat4_t transform_3d;
 float angle;
@@ -42,22 +45,7 @@ float pitch, roll, yaw; // how many degrees per second of rotation
 // Camera
 vec3_t camera_position = { 0.0f, 0.0f, -5.0f };
 
-// Functions
-
-void build_cube_model(void) {
-    int i = 0;
-    for (float x = -1; x <= 1; x += 0.25f) {
-        for (float y = -1; y <= 1; y += 0.25f) {
-            for (float z = -1; z <= 1; z += 0.25f) {
-                vec3_t pt = { .x = x, .y = y, .z = z };
-                cube_model [i++] = pt;
-            }
-        }
-    }
-    
-    mat3_get_identity(transform_2d);
-    mat4_get_identity(transform_3d);
-}
+// ## Functions
 
 vec2_t orthographic_project_point(vec3_t pt3d, float scale2d) {
     // Apply scaling and drop z
@@ -89,8 +77,8 @@ vec2_t perspective_project_point(vec3_t pt3d, float scale2d) {
 
 void project_model(void) {
     // Project the 3d model into 2d space
-    for (int i = 0; i < CUBE_POINT_COUNT; i++) {
-        vec3_t pt3d = cube_model[i];
+    for (int i = 0; i < point_count; i++) {
+        vec3_t pt3d = cube_vertices[i];
         //vec2_t pt2d = orthographic_project_point(pt3d, 240);
         vec2_t pt2d = perspective_project_point(pt3d, 640);
         projected_points[i] = pt2d;
@@ -159,7 +147,7 @@ void run_render_pipeline(void) {
 
     // Draw a 5x5 rect at every projected point
     project_model();
-    for (int i = 0; i < CUBE_POINT_COUNT; i++) {
+    for (int i = 0; i < point_count; i++) {
         vec2_t pt = projected_points[i];
         int cx = pixels_w / 2;
         int cy = pixels_h / 2;
@@ -196,6 +184,9 @@ bool initialize_windowing_system(void) {
         fprintf(stderr, "SDL_CreateWindow() failed!\n");
         return false;
     }
+    
+    // Debug logging: window size
+    fprintf(stdout, "Created window at %dx%d", window_rect.w, window_rect.h);
 
     // Renderer
     renderer = SDL_CreateRenderer(window, -1, 0);
@@ -310,8 +301,9 @@ int main(int argc, char* argv[]) {
 
     if (!initialize_windowing_system()) return 0;
 
-    // Create the cube model
-    build_cube_model();
+    // Reset transforms
+    mat3_get_identity(transform_2d);
+    mat4_get_identity(transform_3d);
 
     animation_mode = 0;
     angle = 0;

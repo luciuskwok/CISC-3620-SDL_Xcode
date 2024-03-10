@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E06F94522B9D396F00155222 /* vector.c in Sources */ = {isa = PBXBuildFile; fileRef = E06F94512B9D396F00155222 /* vector.c */; };
+		E06F94562B9E539B00155222 /* mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = E06F94552B9E539B00155222 /* mesh.c */; };
 		E09C6ED92B69FE8B005CA008 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E09C6ED82B69FE8B005CA008 /* main.c */; };
 		E09C6EED2B6A0A20005CA008 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E09C6EEC2B6A0A20005CA008 /* SDL2.framework */; };
 		E0BD5D082B6AE089003EFAEA /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E09C6EEC2B6A0A20005CA008 /* SDL2.framework */; };
@@ -28,6 +29,9 @@
 
 /* Begin PBXFileReference section */
 		E06F94512B9D396F00155222 /* vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vector.c; sourceTree = "<group>"; };
+		E06F94532B9E50A400155222 /* vector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
+		E06F94542B9E537200155222 /* mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mesh.h; sourceTree = "<group>"; };
+		E06F94552B9E539B00155222 /* mesh.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mesh.c; sourceTree = "<group>"; };
 		E09C6ED52B69FE8B005CA008 /* SDL_Xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SDL_Xcode; sourceTree = BUILT_PRODUCTS_DIR; };
 		E09C6ED82B69FE8B005CA008 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		E09C6EE82B6A03D0005CA008 /* SDL_Xcode.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SDL_Xcode.entitlements; sourceTree = "<group>"; };
@@ -68,6 +72,9 @@
 			children = (
 				E09C6EE82B6A03D0005CA008 /* SDL_Xcode.entitlements */,
 				E09C6ED82B69FE8B005CA008 /* main.c */,
+				E06F94542B9E537200155222 /* mesh.h */,
+				E06F94552B9E539B00155222 /* mesh.c */,
+				E06F94532B9E50A400155222 /* vector.h */,
 				E06F94512B9D396F00155222 /* vector.c */,
 			);
 			path = SDL_Xcode;
@@ -140,6 +147,7 @@
 			files = (
 				E06F94522B9D396F00155222 /* vector.c in Sources */,
 				E09C6ED92B69FE8B005CA008 /* main.c in Sources */,
+				E06F94562B9E539B00155222 /* mesh.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
