@@ -15,6 +15,10 @@ typedef struct {
     int a, b, c;
 } face_t;
 
+typedef struct {
+    vec2_t a, b, c;
+} triangle_t;
+
 
 // Number of points in the mesh
 #define M_MESH_VERTICES (8)
@@ -26,6 +30,6 @@ extern vec3_t cube_vertices[M_MESH_VERTICES];
 #define M_MESH_FACES (6 * 2)
 
 // Declare array of faces
-extern face_t mesh_faces[M_MESH_FACES];
+extern face_t cube_faces[M_MESH_FACES];
 
 #endif /* MESH_H */

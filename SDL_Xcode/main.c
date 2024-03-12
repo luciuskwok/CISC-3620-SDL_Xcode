@@ -31,8 +31,7 @@ int animation_mode;
 uint32_t frame_index;
 
 // Globals for projection
-const int point_count = 8;
-vec2_t projected_points[point_count];
+triangle_t projected_triangles[M_MESH_FACES];
 
 // Transform
 mat3_t transform_2d;
@@ -68,20 +67,20 @@ vec2_t perspective_project_point(vec3_t pt3d, float scale2d) {
     // Apply 2d transform
     pt2d = vec2_mat3_multiply(pt2d, transform_2d);
 
-    // Scale for screen
-    pt2d.x = pt2d.x * scale2d;
-    pt2d.y = pt2d.y * scale2d;
+    // Scale and center on screen
+    pt2d.x = pt2d.x * scale2d + pixels_w / 2;
+    pt2d.y = pt2d.y * scale2d + pixels_h / 2;
 
     return pt2d;
 }
 
 void project_model(void) {
     // Project the 3d model into 2d space
-    for (int i = 0; i < point_count; i++) {
-        vec3_t pt3d = cube_vertices[i];
-        //vec2_t pt2d = orthographic_project_point(pt3d, 240);
-        vec2_t pt2d = perspective_project_point(pt3d, 640);
-        projected_points[i] = pt2d;
+    const float scale2d = 640;
+    for (int f = 0; f < M_MESH_FACES; f++) {
+        projected_triangles[f].a = perspective_project_point(cube_vertices[cube_faces[f].a], scale2d);
+        projected_triangles[f].b = perspective_project_point(cube_vertices[cube_faces[f].b], scale2d);
+        projected_triangles[f].c = perspective_project_point(cube_vertices[cube_faces[f].c], scale2d);
     }
 }
 
@@ -147,12 +146,11 @@ void run_render_pipeline(void) {
 
     // Draw a 5x5 rect at every projected point
     project_model();
-    for (int i = 0; i < point_count; i++) {
-        vec2_t pt = projected_points[i];
-        int cx = pixels_w / 2;
-        int cy = pixels_h / 2;
+    for (int i = 0; i < M_MESH_FACES; i++) {
         uint32_t color = 0xFFFFFFFF; // white color
-        draw_centered_rect(cx + (int)pt.x, cy + (int)pt.y, 5, 5, color);
+        draw_centered_rect(projected_triangles[i].a.x, projected_triangles[i].a.y, 5, 5, color);
+        draw_centered_rect(projected_triangles[i].b.x, projected_triangles[i].b.y, 5, 5, color);
+        draw_centered_rect(projected_triangles[i].c.x, projected_triangles[i].c.y, 5, 5, color);
     }
 
     // Render frame buffer
