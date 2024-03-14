@@ -8,6 +8,7 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include <stdint.h>
 #include "vector.h"
 
 // Face (triangle)

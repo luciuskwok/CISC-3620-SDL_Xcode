@@ -3,6 +3,8 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <stdint.h>
+
 // Basic vector types
 
 typedef struct {

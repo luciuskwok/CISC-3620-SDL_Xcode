@@ -7,8 +7,9 @@
 #include <math.h>
 #include <SDL2/SDL.h>
 
-#include "vector.h"
+#include "color.h"
 #include "mesh.h"
+#include "vector.h"
 
 
 #define M_PI_F ((float)(M_PI))
@@ -36,9 +37,11 @@ int animation_mode;
 // Global state for rendering
 uint32_t frame_index;
 
-// Globals for projection
+// Triangle parameters
 triangle_t projected_triangles[M_MESH_FACES];
 vec2_t projected_points[M_MESH_VERTICES];
+uint32_t triangle_line_color;
+uint32_t triangle_point_color;
 
 // Transform
 mat3_t transform_2d;
@@ -108,33 +111,12 @@ void set_pixel(int x, int y, uint32_t color) {
     if (x < 0 || x >= pixels_w) return;
     if (y < 0 || y >= pixels_h) return;
     
-    // Apply alpha
-    uint32_t a = (color & 0xFF000000) >> 24;
-    uint32_t b = (color & 0x00FF0000) >> 16;
-    uint32_t g = (color & 0x0000FF00) >> 8;
-    uint32_t r = (color & 0x000000FF) >> 0;
-    
-    if (a == 0xFF) {
-        pixels[x + y * pixels_w] = color;
-    } else {
-        uint32_t oldPixel = pixels[x + y * pixels_w];
-        uint32_t b1 = (oldPixel & 0x00FF0000) >> 16;
-        uint32_t g1 = (oldPixel & 0x0000FF00) >> 8;
-        uint32_t r1 = (oldPixel & 0x000000FF) >> 0;
-        uint32_t a1 = 255 - a;
-        
-        // Apply alpha
-        b1 = (b1 * a1 + b * a) / 255;
-        g1 = (g1 * a1 + g * a) / 255;
-        r1 = (r1 * a1 + r * a) / 255;
-        
-        // Clamp to max
-        b1 = (b1 < 255)? b1 : 255;
-        g1 = (g1 < 255)? g1 : 255;
-        r1 = (r1 < 255)? r1 : 255;
-
-        pixels[x + y * pixels_w] = 0xFF000000 | (b1 << 16) | (g1 << 8) | r1;
+    // Apply blending if color's alpha < 255
+    int i = x + y * pixels_w;
+    if ((color & 0xFF000000) != 0xFF000000) {
+        color = blend_color(pixels[i], color);
     }
+    pixels[i] = color;
 }
 
 void draw_centered_rect(int x, int y, int w, int h, uint32_t color) {
@@ -260,6 +242,11 @@ void update_state(void) {
     mat4_pitch(transform_3d, pitch * increment);
     mat4_roll(transform_3d, roll * increment);
     mat4_yaw(transform_3d, yaw * increment);
+    
+    // Update triangle colors
+    int hue = frame_index % 360;
+    triangle_line_color = color_from_hsv(hue, 1.0, 1.0, 1.0);
+    triangle_point_color = color_from_hsv((hue + 60) % 360, 1.0, 1.0, 0.5);
 
     // Update frame index
     frame_index++;
@@ -273,17 +260,16 @@ void run_render_pipeline(void) {
     triangle_t *tri;
     project_model();
     for (int i = 0; i < M_MESH_FACES; i++) {
-        uint32_t color = TRIANGLE_LINE_COLOR;
         tri = &projected_triangles[i];
-        draw_line(tri->a, tri->b, color);
-        draw_line(tri->b, tri->c, color);
-        draw_line(tri->c, tri->a, color);
+        draw_line(tri->a, tri->b, triangle_line_color);
+        draw_line(tri->b, tri->c, triangle_line_color);
+        draw_line(tri->c, tri->a, triangle_line_color);
     }
     
     // Draw each point as a 5x5 rectangle
     for (int i = 0; i < M_MESH_VERTICES; i++) {
         vec2_t pt = projected_points[i];
-        draw_centered_rect(pt.x, pt.y, 5, 5, TRIANGLE_POINT_COLOR);
+        draw_centered_rect(pt.x, pt.y, 5, 5, triangle_point_color);
     }
 
     // Render frame buffer
