@@ -18,7 +18,10 @@
 #define FRAME_TARGET_TIME (1000 / 60)
 
 #define BLACK_COLOR (0xFF000000)
-#define WHITE_COLOR (0XFFFFFFFF)
+#define WHITE_COLOR (0xFFFFFFFF)
+//#define TRIANGLE_LINE_COLOR (0X80FF80FF)
+#define TRIANGLE_LINE_COLOR (0xF08080FF)
+#define TRIANGLE_POINT_COLOR (0x90FF80FF)
 
 // Globals
 SDL_Window* window;
@@ -35,6 +38,7 @@ uint32_t frame_index;
 
 // Globals for projection
 triangle_t projected_triangles[M_MESH_FACES];
+vec2_t projected_points[M_MESH_VERTICES];
 
 // Transform
 mat3_t transform_2d;
@@ -79,11 +83,16 @@ vec2_t perspective_project_point(vec3_t pt3d, float scale2d) {
 
 void project_model(void) {
     // Project the 3d model into 2d space
+    // Triangles
     const float scale2d = 640;
     for (int f = 0; f < M_MESH_FACES; f++) {
         projected_triangles[f].a = perspective_project_point(cube_vertices[cube_faces[f].a], scale2d);
         projected_triangles[f].b = perspective_project_point(cube_vertices[cube_faces[f].b], scale2d);
         projected_triangles[f].c = perspective_project_point(cube_vertices[cube_faces[f].c], scale2d);
+    }
+    // Points
+    for (int i = 0; i < M_MESH_VERTICES; i++) {
+        projected_points[i] = perspective_project_point(cube_vertices[i], scale2d);
     }
 }
 
@@ -98,7 +107,34 @@ void clear_screen(uint32_t color) {
 void set_pixel(int x, int y, uint32_t color) {
     if (x < 0 || x >= pixels_w) return;
     if (y < 0 || y >= pixels_h) return;
-    pixels[x + y * pixels_w] = color;
+    
+    // Apply alpha
+    uint32_t a = (color & 0xFF000000) >> 24;
+    uint32_t b = (color & 0x00FF0000) >> 16;
+    uint32_t g = (color & 0x0000FF00) >> 8;
+    uint32_t r = (color & 0x000000FF) >> 0;
+    
+    if (a == 0xFF) {
+        pixels[x + y * pixels_w] = color;
+    } else {
+        uint32_t oldPixel = pixels[x + y * pixels_w];
+        uint32_t b1 = (oldPixel & 0x00FF0000) >> 16;
+        uint32_t g1 = (oldPixel & 0x0000FF00) >> 8;
+        uint32_t r1 = (oldPixel & 0x000000FF) >> 0;
+        uint32_t a1 = 255 - a;
+        
+        // Apply alpha
+        b1 = (b1 * a1 + b * a) / 255;
+        g1 = (g1 * a1 + g * a) / 255;
+        r1 = (r1 * a1 + r * a) / 255;
+        
+        // Clamp to max
+        b1 = (b1 < 255)? b1 : 255;
+        g1 = (g1 < 255)? g1 : 255;
+        r1 = (r1 < 255)? r1 : 255;
+
+        pixels[x + y * pixels_w] = 0xFF000000 | (b1 << 16) | (g1 << 8) | r1;
+    }
 }
 
 void draw_centered_rect(int x, int y, int w, int h, uint32_t color) {
@@ -233,15 +269,21 @@ void run_render_pipeline(void) {
     // Clear frame buffer
     clear_screen(BLACK_COLOR);
 
-    // Draw a line between each vertex of the triangle
-    triangle_t *pt;
+    // Draw each triangle as lines for a wireframe
+    triangle_t *tri;
     project_model();
     for (int i = 0; i < M_MESH_FACES; i++) {
-        uint32_t color = WHITE_COLOR;
-        pt = &projected_triangles[i];
-        draw_line(pt->a, pt->b, color);
-        draw_line(pt->b, pt->c, color);
-        draw_line(pt->c, pt->a, color);
+        uint32_t color = TRIANGLE_LINE_COLOR;
+        tri = &projected_triangles[i];
+        draw_line(tri->a, tri->b, color);
+        draw_line(tri->b, tri->c, color);
+        draw_line(tri->c, tri->a, color);
+    }
+    
+    // Draw each point as a 5x5 rectangle
+    for (int i = 0; i < M_MESH_VERTICES; i++) {
+        vec2_t pt = projected_points[i];
+        draw_centered_rect(pt.x, pt.y, 5, 5, TRIANGLE_POINT_COLOR);
     }
 
     // Render frame buffer
