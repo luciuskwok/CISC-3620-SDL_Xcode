@@ -112,15 +112,15 @@ void draw_centered_rect(int x, int y, int w, int h, uint32_t color) {
 }
 
 void draw_line(vec2_t a, vec2_t b, uint32_t color) {
-    int dx = b.x - a.x;
-    int dy = b.y - a.y;
-    int st = abs(dx) > abs(dy)? abs(dx) : abs(dy);
-    float sx = dx / (float)(st);
-    float sy = dy / (float)(st);
+    float dx = b.x - a.x;
+    float dy = b.y - a.y;
+    float steps = fabs(dx) > fabs(dy)? fabs(dx) : fabs(dy);
+    float sx = dx / steps;
+    float sy = dy / steps;
     float x = a.x;
     float y = a.y;
-    for (int i = 0; i <= st; i++) {
-        set_pixel(x, y, color);
+    for (float i = 0.0f; i <= steps; i++) {
+        set_pixel(floorf(x), floorf(y), color);
         x += sx;
         y += sy;
     }
