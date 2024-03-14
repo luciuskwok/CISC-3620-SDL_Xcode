@@ -44,7 +44,7 @@ float pitch, roll, yaw; // how many degrees per second of rotation
 // Camera
 vec3_t camera_position = { 0.0f, 0.0f, -5.0f };
 
-// ## Functions
+#pragma mark - 3D Drawing
 
 vec2_t orthographic_project_point(vec3_t pt3d, float scale2d) {
     // Apply scaling and drop z
@@ -84,6 +84,8 @@ void project_model(void) {
     }
 }
 
+#pragma mark - 2D Drawing
+
 void clear_screen(uint32_t color) {
     for (int i = 0; i < pixels_w * pixels_h; i++) {
         pixels[i] = color;
@@ -103,6 +105,90 @@ void draw_centered_rect(int x, int y, int w, int h, uint32_t color) {
         for (int x1 = 0; x1 < w; x1++) {
             set_pixel(left + x1, top + y1, color);
         }
+    }
+}
+
+void draw_line(vec2_t a, vec2_t b, uint32_t color) {
+    int dx = b.x - a.x;
+    int dy = b.y - a.y;
+    int st = abs(dx) > abs(dy)? abs(dx) : abs(dy);
+    float sx = dx / (float)(st);
+    float sy = dy / (float)(st);
+    float x = a.x;
+    float y = a.y;
+    for (int i = 0; i <= st; i++) {
+        set_pixel(x, y, color);
+        x += sx;
+        y += sy;
+    }
+}
+
+#pragma mark - Game Loop
+
+void process_keyboard_input(void) {
+    SDL_Event event;
+    SDL_PollEvent(&event);
+
+    // Keyboard interaction
+    switch (event.type) {
+    case SDL_QUIT: // when 'X' button is pressed in window titlebar
+        // Exit program
+        is_running = false;
+        break;
+    case SDL_KEYDOWN:
+        switch (event.key.keysym.sym) {
+            case SDLK_ESCAPE:
+                // Exit program
+                is_running = false;
+                break;
+            case SDLK_0:
+                // Reset all state variables and positions
+                animation_mode = 0;
+                mat3_get_identity(transform_2d);
+                mat4_get_identity(transform_3d);
+                angle = 0;
+                pitch = 0;
+                roll = 0;
+                yaw = 0;
+                break;
+            case SDLK_1:
+                animation_mode = 1;
+                break;
+            case SDLK_2:
+                animation_mode = 2;
+                break;
+            case SDLK_e:
+                // Roll right
+                roll += 1.0f;
+                break;
+            case SDLK_q:
+                // Roll left
+                roll -= 1.0f;
+                break;
+            case SDLK_w:
+                // Pitch down
+                pitch += 1.0f;
+                break;
+            case SDLK_s:
+                // Pitch up
+                pitch -= 1.0f;
+                break;
+            case SDLK_a:
+                // Yaw left
+                yaw += 1.0f;
+                break;
+            case SDLK_d:
+                // Yaw right
+                yaw -= 1.0f;
+                break;
+            case SDLK_SPACE:
+                // Stop movement
+                pitch = 0.0f;
+                roll = 0.0f;
+                yaw = 0.0f;
+                break;
+        }
+        break;
     }
 }
 
@@ -144,13 +230,15 @@ void run_render_pipeline(void) {
     // Clear frame buffer
     clear_screen(0x000000FF);
 
-    // Draw a 5x5 rect at every projected point
+    // Draw a line between each vertex of the triangle
+    triangle_t *pt;
     project_model();
     for (int i = 0; i < M_MESH_FACES; i++) {
         uint32_t color = 0xFFFFFFFF; // white color
-        draw_centered_rect(projected_triangles[i].a.x, projected_triangles[i].a.y, 5, 5, color);
-        draw_centered_rect(projected_triangles[i].b.x, projected_triangles[i].b.y, 5, 5, color);
-        draw_centered_rect(projected_triangles[i].c.x, projected_triangles[i].c.y, 5, 5, color);
+        pt = &projected_triangles[i];
+        draw_line(pt->a, pt->b, color);
+        draw_line(pt->b, pt->c, color);
+        draw_line(pt->c, pt->a, color);
     }
 
     // Render frame buffer
@@ -158,6 +246,8 @@ void run_render_pipeline(void) {
     SDL_RenderCopy(renderer, texture, NULL, &window_rect);
     SDL_RenderPresent(renderer);
 }
+
+#pragma mark - Init & Clean Up
 
 bool initialize_windowing_system(void) {
     // Set up SDL
@@ -230,68 +320,6 @@ void clean_up_windowing_system(void) {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-}
-
-void process_keyboard_input(void) {
-    SDL_Event event;
-    SDL_PollEvent(&event);
-
-
-    // Keyboard interaction
-    switch (event.type) {
-    case SDL_QUIT: // when 'X' button is pressed in window titlebar
-        // Exit program
-        is_running = false;
-        break;
-    case SDL_KEYDOWN:
-        switch (event.key.keysym.sym) {
-            case SDLK_ESCAPE:
-                // Exit program
-                is_running = false;
-                break;
-            case SDLK_0:
-                // Reset all state variables and positions
-                animation_mode = 0;
-                mat3_get_identity(transform_2d);
-                mat4_get_identity(transform_3d);
-                angle = 0;
-                pitch = 0;
-                roll = 0;
-                yaw = 0;
-                break;
-            case SDLK_1:
-                animation_mode = 1;
-                break;
-            case SDLK_2:
-                animation_mode = 2;
-                break;
-            case SDLK_e:
-                // Roll right
-                roll += 1.0f;
-                break;
-            case SDLK_q:
-                // Roll left
-                roll -= 1.0f;
-                break;
-            case SDLK_w:
-                // Pitch down
-                pitch += 1.0f;
-                break;
-            case SDLK_s:
-                // Pitch up
-                pitch -= 1.0f;
-                break;
-            case SDLK_a:
-                // Yaw left
-                yaw += 1.0f;
-                break;
-            case SDLK_d:
-                // Yaw right
-                yaw -= 1.0f;
-                break;
-        }
-        break;
-    }
 }
 
 int main(int argc, char* argv[]) {
