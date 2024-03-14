@@ -17,6 +17,9 @@
 #define FPS (60)
 #define FRAME_TARGET_TIME (1000 / 60)
 
+#define BLACK_COLOR (0xFF000000)
+#define WHITE_COLOR (0XFFFFFFFF)
+
 // Globals
 SDL_Window* window;
 SDL_Renderer* renderer;
@@ -228,13 +231,13 @@ void update_state(void) {
 
 void run_render_pipeline(void) {
     // Clear frame buffer
-    clear_screen(0x000000FF);
+    clear_screen(BLACK_COLOR);
 
     // Draw a line between each vertex of the triangle
     triangle_t *pt;
     project_model();
     for (int i = 0; i < M_MESH_FACES; i++) {
-        uint32_t color = 0xFFFFFFFF; // white color
+        uint32_t color = WHITE_COLOR;
         pt = &projected_triangles[i];
         draw_line(pt->a, pt->b, color);
         draw_line(pt->b, pt->c, color);
@@ -273,9 +276,6 @@ bool initialize_windowing_system(void) {
         return false;
     }
     
-    // Debug logging: window size
-    fprintf(stdout, "Created window at %dx%d", window_rect.w, window_rect.h);
-
     // Renderer
     renderer = SDL_CreateRenderer(window, -1, 0);
     if (!renderer) {
@@ -286,8 +286,9 @@ bool initialize_windowing_system(void) {
     // Texture
     pixels_w = window_rect.w;
     pixels_h = window_rect.h;
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888,
         SDL_TEXTUREACCESS_STREAMING, pixels_w, pixels_h);
+        // Using ABGR pixel format is slightly faster (~10%) than using RGBA.
     if (!texture) {
         fprintf(stderr, "SDL_CreateTexture() failed!\n");
         return false;
@@ -299,7 +300,7 @@ bool initialize_windowing_system(void) {
         fprintf(stderr, "malloc() failed!\n");
         return false;
     }
-    clear_screen(0x000000FF);
+    clear_screen(BLACK_COLOR);
     
     // Set up the renderer
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 0); // Use no interpolation
@@ -310,6 +311,9 @@ bool initialize_windowing_system(void) {
 
     // Reset the frame index
     frame_index = 0;
+
+    // Debug logging: window * texture size
+    fprintf(stdout, "Created window (%dx%d) and texture (%dx%d).", window_rect.w, window_rect.h, pixels_w, pixels_h);
 
     return true;
 }
@@ -323,8 +327,6 @@ void clean_up_windowing_system(void) {
 }
 
 int main(int argc, char* argv[]) {
-    printf("Started program.\n");
-
     if (!initialize_windowing_system()) return 0;
 
     // Reset transforms
