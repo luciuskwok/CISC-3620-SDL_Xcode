@@ -10,6 +10,7 @@
 #include "color.h"
 #include "mesh.h"
 #include "vector.h"
+#include "matrix.h"
 
 
 #define M_PI_F ((float)(M_PI))

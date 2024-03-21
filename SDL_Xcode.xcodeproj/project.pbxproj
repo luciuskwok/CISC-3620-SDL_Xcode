@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E04CAC9C2BACBEEC0015EC5E /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = E04CAC9B2BACBEEC0015EC5E /* matrix.c */; };
 		E06F94522B9D396F00155222 /* vector.c in Sources */ = {isa = PBXBuildFile; fileRef = E06F94512B9D396F00155222 /* vector.c */; };
 		E06F94562B9E539B00155222 /* mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = E06F94552B9E539B00155222 /* mesh.c */; };
 		E09C6ED92B69FE8B005CA008 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E09C6ED82B69FE8B005CA008 /* main.c */; };
@@ -29,6 +30,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E04CAC9A2BACBEEC0015EC5E /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
+		E04CAC9B2BACBEEC0015EC5E /* matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = matrix.c; sourceTree = "<group>"; };
 		E06F94512B9D396F00155222 /* vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vector.c; sourceTree = "<group>"; };
 		E06F94532B9E50A400155222 /* vector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
 		E06F94542B9E537200155222 /* mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mesh.h; sourceTree = "<group>"; };
@@ -81,6 +84,8 @@
 				E06F94552B9E539B00155222 /* mesh.c */,
 				E06F94532B9E50A400155222 /* vector.h */,
 				E06F94512B9D396F00155222 /* vector.c */,
+				E04CAC9A2BACBEEC0015EC5E /* matrix.h */,
+				E04CAC9B2BACBEEC0015EC5E /* matrix.c */,
 			);
 			path = SDL_Xcode;
 			sourceTree = "<group>";
@@ -150,6 +155,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E04CAC9C2BACBEEC0015EC5E /* matrix.c in Sources */,
 				E06F94522B9D396F00155222 /* vector.c in Sources */,
 				E09C6ED92B69FE8B005CA008 /* main.c in Sources */,
 				E06F94562B9E539B00155222 /* mesh.c in Sources */,
