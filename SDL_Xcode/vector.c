@@ -8,6 +8,7 @@
 #include "vector.h"
 #include <math.h>
 
+#pragma mark - 2D Vector
 
 vec2_t vec2_rotate(vec2_t p, float a) {
 	vec2_t q;
@@ -15,6 +16,12 @@ vec2_t vec2_rotate(vec2_t p, float a) {
 	q.y = p.x * sinf(a) + p.y * cosf(a);
 	return q;
 }
+
+float vec2_length(vec2_t v) {
+    return hypotf(v.x, v.y);
+}
+
+#pragma mark - 3D Vector
 
 vec3_t vec3_add(vec3_t a, vec3_t b) {
 	a.x += b.x;
@@ -29,6 +36,12 @@ vec3_t vec3_subtract(vec3_t a, vec3_t b) {
 	a.z -= b.z;
 	return a;
 }
+
+float vec3_length(vec3_t v) {
+    return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+#pragma mark - 2D Matrix
 
 void mat3_get_identity(mat3_t m) {
 	m[0][0] = 1; m[0][1] = 0; m[0][2] = 0;
@@ -94,6 +107,7 @@ vec2_t vec2_mat3_multiply(const vec2_t a, const mat3_t m) {
 	return b;
 }
 
+#pragma mark - 3D Matrix
 
 void mat4_get_identity(mat4_t m) {
 	m[0][0] = 1; m[0][1] = 0; m[0][2] = 0; m[0][3] = 0;
