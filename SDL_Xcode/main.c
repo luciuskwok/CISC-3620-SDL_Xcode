@@ -71,7 +71,7 @@ vec2_t perspective_project_point(vec3_t pt3d, float scale2d) {
     pt3d = vec3_mat4_multiply(pt3d, transform_3d);
 
     // Apply camera position
-    pt3d = vec3_subtract(pt3d, camera_position);
+    pt3d = vec3_sub(pt3d, camera_position);
 
     vec2_t pt2d = { .x = pt3d.x / pt3d.z, .y = pt3d.y / pt3d.z };
 

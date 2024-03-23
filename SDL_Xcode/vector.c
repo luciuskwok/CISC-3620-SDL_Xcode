@@ -10,6 +10,26 @@
 
 #pragma mark - 2D Vector
 
+vec2_t vec2_add(vec2_t a, vec2_t b) {
+	vec2_t c = { a.x + b.x, a.y + b.y };
+	return c;
+}
+
+vec2_t vec2_sub(vec2_t a, vec2_t b) {
+	vec2_t c = { a.x - b.x, a.y - b.y };
+	return c;
+}
+
+vec2_t vec2_mul(vec2_t a, float b) {
+	vec2_t c = { a.x * b, a.y * b };
+	return c;
+}
+
+vec2_t vec2_div(vec2_t a, float b) {
+	vec2_t c = { a.x / b, a.y / b };
+	return c;
+}
+
 vec2_t vec2_rotate(vec2_t p, float a) {
 	vec2_t q;
 	q.x = p.x * cosf(a) - p.y * sinf(a);
@@ -24,17 +44,23 @@ float vec2_length(vec2_t v) {
 #pragma mark - 3D Vector
 
 vec3_t vec3_add(vec3_t a, vec3_t b) {
-	a.x += b.x;
-	a.y += b.y;
-	a.z += b.z;
-	return a;
+	vec3_t c = { a.x + b.x, a.y + b.y, a.z + b.z };
+	return c;
 }
 
-vec3_t vec3_subtract(vec3_t a, vec3_t b) {
-	a.x -= b.x;
-	a.y -= b.y;
-	a.z -= b.z;
-	return a;
+vec3_t vec3_sub(vec3_t a, vec3_t b) {
+	vec3_t c = { a.x - b.x, a.y - b.y, a.z - b.z };
+	return c;
+}
+
+vec3_t vec3_mul(vec3_t a, float b) {
+	vec3_t c = { a.x * b, a.y * b, a.z * b };
+	return c;
+}
+
+vec3_t vec3_div(vec3_t a, float b) {
+	vec3_t c = { a.x / b, a.y / b, a.z / b };
+	return c;
 }
 
 float vec3_length(vec3_t v) {
