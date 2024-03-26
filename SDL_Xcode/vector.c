@@ -66,3 +66,17 @@ vec3_t vec3_div(vec3_t a, float b) {
 float vec3_length(vec3_t v) {
     return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
 }
+
+#pragma mark - Products
+
+vec3_t vec3_cross(vec3_t a, vec3_t b) {
+	vec3_t c;
+	c.x = a.y * b.z - a.z * b.y;
+	c.y = a.z * b.x - a.x * b.z;
+	c.z = a.x * b.y - a.y * b.x;
+	return c;
+}
+
+float vec3_dot(vec3_t a, vec3_t b) {
+	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+}
