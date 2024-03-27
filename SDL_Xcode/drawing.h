@@ -40,6 +40,6 @@ uint32_t get_screen_height(void);
 void init_projection(void);
 vec2_t orthographic_project_point(vec3_t pt3d);
 vec2_t perspective_project_point(vec3_t pt3d);
-
+vec3_t get_camera_position(void);
 
 #endif /* drawing_h */

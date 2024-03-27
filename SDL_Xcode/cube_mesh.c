@@ -75,11 +75,6 @@ float cube_pitch, cube_roll, cube_yaw; // how many degrees per second of rotatio
 uint32_t cube_line_color;
 uint32_t cube_point_color;
 
-// Projected points
-triangle_t projected_triangles[M_MESH_FACES];
-vec2_t projected_points[M_MESH_VERTICES];
-
-
 #pragma mark - Fuctions
 
 void init_cube(void) {
@@ -100,45 +95,46 @@ void update_cube(uint64_t frame_index) {
 	cube_point_color = color_from_hsv((hue + 60) % 360, 1.0, 1.0, 0.5);
 }
 
-vec2_t project_point(vec3_t a, mat4_t transform) {
-	a = vec3_mat4_multiply(a, transform);
-	return perspective_project_point(a);
-}
-
-void project_model(void) {
-	// Project the 3d model into 2d space
-	
-	// Triangles
-	for (int f = 0; f < M_MESH_FACES; f++) {
-		projected_triangles[f].a = project_point(cube_vertices[cube_faces[f].a], cube_transform_3d);
-		projected_triangles[f].b = project_point(cube_vertices[cube_faces[f].b], cube_transform_3d);
-		projected_triangles[f].c = project_point(cube_vertices[cube_faces[f].c], cube_transform_3d);
-	}
-	
-	// Points
-	for (int i = 0; i < M_MESH_VERTICES; i++) {
-		projected_points[i] = project_point(cube_vertices[i], cube_transform_3d);
-	}
-}
-
 void draw_cube(void) {
-	// Draw each triangle as lines for a wireframe
-	triangle_t *tri;
-	project_model();
-	set_line_color(cube_line_color);
-	for (int i = 0; i < M_MESH_FACES; i++) {
-		tri = &projected_triangles[i];
-		move_to(tri->a);
-		line_to(tri->b);
-		line_to(tri->c);
-		line_to(tri->a);
-	}
+	vec3_t a3, b3, c3;
+	vec2_t a2, b2, c2;
+	vec3_t vab, vac, normal, camera_ray;
+	float dot_normal_camera;
+	const vec3_t camera_pos = get_camera_position();
+	const int point_w = 5;
 	
-	// Draw each point as a 5x5 rectangle
+	set_line_color(cube_line_color);
 	set_fill_color(cube_point_color);
-	for (int i = 0; i < M_MESH_VERTICES; i++) {
-		vec2_t pt = projected_points[i];
-		fill_centered_rect(pt.x, pt.y, 5, 5);
+	
+	for (int i = 0; i < M_MESH_FACES; i++) {
+		a3 = vec3_mat4_multiply(cube_vertices[cube_faces[i].a], cube_transform_3d);
+		b3 = vec3_mat4_multiply(cube_vertices[cube_faces[i].b], cube_transform_3d);
+		c3 = vec3_mat4_multiply(cube_vertices[cube_faces[i].c], cube_transform_3d);
+		
+		// Backface culling
+		vab = vec3_sub(b3, a3);
+		vac = vec3_sub(c3, a3);
+		normal = vec3_cross(vab, vac);
+		camera_ray = vec3_sub(a3, camera_pos);
+		dot_normal_camera = vec3_dot(camera_ray, normal);
+		
+		if (dot_normal_camera > 0.0) {
+			// Project to 2D
+			a2 = perspective_project_point(a3);
+			b2 = perspective_project_point(b3);
+			c2 = perspective_project_point(c3);
+			
+			// Lines
+			move_to(a2);
+			line_to(b2);
+			line_to(c2);
+			line_to(a2);
+			
+			// Points
+			fill_centered_rect(a2.x, a2.y, point_w, point_w);
+			fill_centered_rect(b2.x, b2.y, point_w, point_w);
+			fill_centered_rect(c2.x, c2.y, point_w, point_w);
+		}
 	}
 }
 

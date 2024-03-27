@@ -181,7 +181,7 @@ void init_projection(void) {
 	
 	// Set default camera transform to -5 units
 	mat4_get_identity(camera_transform_3d);
-	mat4_translate(camera_transform_3d, 0, 0, -5);
+	mat4_translate(camera_transform_3d, 0, 0, 5);
 }
 
 vec2_t orthographic_project_point(vec3_t pt3d) {
@@ -203,4 +203,10 @@ vec2_t perspective_project_point(vec3_t pt3d) {
 	pt2d = vec2_mat3_multiply(pt2d, view_transform_2d);
 
 	return pt2d;
+}
+
+vec3_t get_camera_position(void) {
+	vec3_t a = { 0, 0, 0 };
+	vec3_t b = vec3_mat4_multiply(a, camera_transform_3d);
+	return vec3_sub(a, b);
 }
