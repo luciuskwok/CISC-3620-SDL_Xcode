@@ -33,8 +33,8 @@ void set_pixel(int x, int y, uint32_t color);
 vec2_t get_cursor(void);
 uint32_t get_line_color(void);
 uint32_t get_fill_color(void);
-uint32_t get_screen_width(void);
-uint32_t get_screen_height(void);
+int get_screen_width(void);
+int get_screen_height(void);
 
 // Projection 3D
 void init_projection(void);

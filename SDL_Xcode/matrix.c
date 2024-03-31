@@ -37,7 +37,7 @@ void mat3_scale(mat3_t m, float sx, float sy) {
 void mat3_rotate(mat3_t m, float a) {
 	mat3_t r = {
 		cosf(a), -sinf(a), 0,
-		sinf(a), cos(a), 0,
+		sinf(a), cosf(a), 0,
 		0, 0, 1
 	};
 	mat3_multiply(m, r, m);

@@ -1,6 +1,6 @@
 //
 //  cube_mesh.c
-//  SDL_Xcode
+//  Toma Boxing
 //
 //  Created by Lucius Kwok on 3/10/24.
 //
@@ -10,8 +10,6 @@
 #include "drawing.h"
 #include "matrix.h"
 #include <math.h>
-#include <SDL2/SDL.h>
-
 
 /*
  Vertex numbering
@@ -78,16 +76,22 @@ uint32_t cube_line_color;
 uint32_t cube_point_color;
 uint64_t cube_ticks;
 
+// Projected points
+triangle_t projected_triangles[M_MESH_FACES];
+vec2_t projected_points[M_MESH_VERTICES];
+
+
 #pragma mark - Fuctions
 
 void init_cube(void) {
 	mat4_get_identity(cube_transform_3d);
 	cube_pitch = cube_roll = cube_yaw = 0;
+	cube_ticks = 0;
 }
 
 void update_cube(uint64_t delta_time) {
 	// Update rotation
-	float increment = (M_PI / 180.f) * (float)delta_time / 1000.0f; // 1 deg/sec
+	float increment = ((float)M_PI / 180.f) * (float)delta_time / 1000.f; // 1 deg/sec
 	mat4_pitch(cube_transform_3d, cube_pitch * increment);
 	mat4_roll(cube_transform_3d, cube_roll * increment);
 	mat4_yaw(cube_transform_3d, cube_yaw * increment);
@@ -135,9 +139,9 @@ void draw_cube(void) {
 			line_to(a2);
 			
 			// Points
-			fill_centered_rect(a2.x, a2.y, point_w, point_w);
-			fill_centered_rect(b2.x, b2.y, point_w, point_w);
-			fill_centered_rect(c2.x, c2.y, point_w, point_w);
+			fill_centered_rect((int)a2.x, (int)a2.y, point_w, point_w);
+			fill_centered_rect((int)b2.x, (int)b2.y, point_w, point_w);
+			fill_centered_rect((int)c2.x, (int)c2.y, point_w, point_w);
 		}
 	}
 }
@@ -164,4 +168,3 @@ void cube_add_roll(float x) {
 void cube_add_yaw(float x) {
 	cube_yaw += x;
 }
-
