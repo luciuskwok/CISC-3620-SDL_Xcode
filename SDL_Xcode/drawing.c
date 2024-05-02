@@ -32,21 +32,28 @@ vec2_t cursor;
 // Transforms
 mat3_t view_transform_2d;
 mat4_t camera_transform_3d;
-
+mat4_t perspective_matrix;
 
 
 #pragma mark - SDL Interface
 
 void init_projection(void) {
-	// Set default view transform to center on and scale to screen
+	// Maps the top of the screen to y = 1.0, bottom to y = -1.0,
+	// and the sides vary based on the aspect ratio.
+	// Origin is in the center.
 	vec2_t st = { .x = screen_w / 2, .y = screen_h / 2 };
 	view_transform_2d = mat3_translate(mat3_identity(), st);
-	vec2_t s = { .x = screen_h, .y = screen_h } ;
+	vec2_t s = { .x = screen_h / 2, .y = screen_h / 2 } ;
 	view_transform_2d = mat3_scale(view_transform_2d, s);
 	
-	// Set default camera transform to -5 units
-	vec3_t ct = { .x = 0, .y = 0, .z = -5 };
+	// Camera transform
+	vec3_t ct = { .x = 0, .y = 0, .z = 5 };
 	camera_transform_3d = mat4_translate(mat4_identity(), ct);
+	
+	// Perspective matrix
+	float aspect = (float)screen_h / (float)screen_w;
+	float fov = 60.0f * (float)M_PI / 180.0f;
+	perspective_matrix = mat4_perspective_matrix(fov, aspect, 0.3f, 1000.0f);
 }
 
 bool init_screen(int width, int height, int scale) {
@@ -85,8 +92,7 @@ bool init_screen(int width, int height, int scale) {
 		fprintf(stderr, "malloc() failed!\n");
 		return false;
 	}
-	fill_color = ABGR_BLACK;
-	fill_screen();
+	fill_screen(ABGR_BLACK);
 	
 	// Set up the renderer
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 0); // Use no interpolation
@@ -121,9 +127,9 @@ void render_to_screen(void) {
 
 #pragma mark - Drawing 2D
 
-void fill_screen(void) {
+void fill_screen(color_abgr_t color) {
 	for (int i = 0; i < screen_w * screen_h; i++) {
-		screen_pixels[i] = fill_color;
+		screen_pixels[i] = color;
 	}
 }
 
@@ -170,11 +176,6 @@ void set_pixel(int x, int y, color_abgr_t color) {
 	}
 	screen_pixels[i] = color;
 }
-
-#pragma mark - Getters
-
-int get_screen_width(void) { return screen_w; }
-int get_screen_height(void) { return screen_h; }
 
 #pragma mark - Projection 3D
 

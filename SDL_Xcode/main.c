@@ -94,12 +94,8 @@ void update_state(uint64_t delta_time) {
 }
 
 void run_render_pipeline(void) {
-	fill_color = ABGR_BLACK;
-	fill_screen();
-	
-	// Draw cube
+	fill_screen(ABGR_BLACK);
 	mesh_draw(cube);
-	
 	render_to_screen();
 }
 

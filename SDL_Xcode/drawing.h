@@ -29,7 +29,7 @@ void destroy_screen(void);
 void render_to_screen(void);
 
 // Drawing 2D
-void fill_screen(void);
+void fill_screen(color_abgr_t color);
 
 void move_to(vec2_t a);
 void line_to(vec2_t a);
@@ -37,9 +37,6 @@ void fill_rect(int x, int y, int w, int h);
 void fill_centered_rect(int x, int y, int w, int h);
 
 void set_pixel(int x, int y, color_abgr_t color);
-
-int get_screen_width(void);
-int get_screen_height(void);
 
 // Projection 3D
 void init_projection(void);

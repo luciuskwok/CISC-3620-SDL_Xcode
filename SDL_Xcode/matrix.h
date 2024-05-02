@@ -32,6 +32,7 @@ vec3_t vec3_mat3_mul(const vec3_t a, const mat3_t m);
 
 // 3D Matrix Functions
 mat4_t mat4_identity(void);
+mat4_t mat4_perspective_matrix(float fov, float aspect, float znear, float zfar);
 mat4_t mat4_translate(mat4_t m, vec3_t t);
 mat4_t mat4_scale(mat4_t m, vec3_t s);
 mat4_t mat4_rot_x(mat4_t m, float a);

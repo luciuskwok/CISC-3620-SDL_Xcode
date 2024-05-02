@@ -77,7 +77,8 @@ vec2_t projected_points[PROJECTED_POINTS_LEN];
 
 mesh_t *mesh_new_cube(void) {
 	mesh_t *mesh = mesh_new(CUBE_FACES_LEN);
-	
+	if (!mesh) return NULL;
+
 	mesh_face_t *f = mesh->faces;
 	for (int i=0; i<CUBE_FACES_LEN; i++) {
 		f[i].a = cube_vertices[cube_faces[i].a];

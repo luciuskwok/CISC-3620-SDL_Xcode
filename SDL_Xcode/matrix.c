@@ -89,6 +89,18 @@ mat4_t mat4_identity(void) {
 	return m;
 }
 
+mat4_t mat4_perspective_matrix(float fov, float aspect, float znear, float zfar) {
+	mat4_t m = { 0 };
+	float scale = 1.0f / tanf(fov / 2.0f);
+	m.m[0][0] = aspect * scale;
+	m.m[1][1] = scale;
+	m.m[2][2] = zfar / (zfar - znear);
+	m.m[2][3] = (zfar * znear) / (zfar - znear);
+	m.m[3][2] = 1;
+	
+	return m;
+}
+
 mat4_t mat4_translate(mat4_t m, vec3_t t) {
 	mat4_t n = {
 		1, 0, 0, t.x,
