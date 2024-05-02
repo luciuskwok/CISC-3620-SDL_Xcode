@@ -8,17 +8,18 @@
 // Basic vector types
 
 typedef struct {
-	float x;
-	float y;
+	float x, y;
 } vec2_t;
 
 typedef struct {
-	float x;
-	float y;
-	float z;
+	float x, y ,z;
 } vec3_t;
 
-// 2D Functions
+typedef struct {
+	float x, y, z, w;
+} vec4_t;
+
+// vec2 Functions
 vec2_t vec2_add(vec2_t a, vec2_t b);
 vec2_t vec2_sub(vec2_t a, vec2_t b);
 vec2_t vec2_mul(vec2_t a, float b);
@@ -26,7 +27,7 @@ vec2_t vec2_div(vec2_t a, float b);
 vec2_t vec2_rotate(vec2_t p, float a);
 float vec2_length(vec2_t v);
 
-// 3D Functions
+// vec3 Functions
 vec3_t vec3_add(vec3_t a, vec3_t b);
 vec3_t vec3_sub(vec3_t a, vec3_t b);
 vec3_t vec3_mul(vec3_t a, float b);

@@ -84,7 +84,7 @@ vec2_t projected_points[M_MESH_VERTICES];
 #pragma mark - Fuctions
 
 void init_cube(void) {
-	mat4_get_identity(cube_transform_3d);
+	mat4_identity(cube_transform_3d);
 	cube_pitch = cube_roll = cube_yaw = 0;
 	cube_ticks = 0;
 }
@@ -92,9 +92,9 @@ void init_cube(void) {
 void update_cube(uint64_t delta_time) {
 	// Update rotation
 	float increment = ((float)M_PI / 180.f) * (float)delta_time / 1000.f; // 1 deg/sec
-	mat4_pitch(cube_transform_3d, cube_pitch * increment);
-	mat4_roll(cube_transform_3d, cube_roll * increment);
-	mat4_yaw(cube_transform_3d, cube_yaw * increment);
+	mat4_rot_x(cube_transform_3d, cube_pitch * increment);
+	mat4_rot_z(cube_transform_3d, cube_roll * increment);
+	mat4_rot_y(cube_transform_3d, cube_yaw * increment);
 
 	// Update triangle colors
 	cube_ticks += delta_time;
@@ -115,9 +115,9 @@ void draw_cube(void) {
 	set_fill_color(cube_point_color);
 	
 	for (int i = 0; i < M_MESH_FACES; i++) {
-		a3 = vec3_mat4_multiply(cube_vertices[cube_faces[i].a], cube_transform_3d);
-		b3 = vec3_mat4_multiply(cube_vertices[cube_faces[i].b], cube_transform_3d);
-		c3 = vec3_mat4_multiply(cube_vertices[cube_faces[i].c], cube_transform_3d);
+		a3 = vec3_mat4_mul(cube_vertices[cube_faces[i].a], cube_transform_3d);
+		b3 = vec3_mat4_mul(cube_vertices[cube_faces[i].b], cube_transform_3d);
+		c3 = vec3_mat4_mul(cube_vertices[cube_faces[i].c], cube_transform_3d);
 		
 		// Backface culling
 		vab = vec3_sub(b3, a3);
@@ -149,7 +149,7 @@ void draw_cube(void) {
 #pragma mark - Momemtum
 
 void cube_reset_transform(void) {
-	mat4_get_identity(cube_transform_3d);
+	mat4_identity(cube_transform_3d);
 	cube_pitch = cube_roll = cube_yaw = 0;
 }
 

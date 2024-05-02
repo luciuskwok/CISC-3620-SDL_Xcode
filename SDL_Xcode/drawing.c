@@ -39,13 +39,13 @@ mat4_t camera_transform_3d;
 
 void init_projection(void) {
 	// Set default view transform to center on and scale to screen
-	mat3_get_identity(view_transform_2d);
+	mat3_identity(view_transform_2d);
 	mat3_translate(view_transform_2d, screen_w / 2, screen_h / 2);
 	float scale2d = screen_h;
 	mat3_scale(view_transform_2d, scale2d, scale2d);
 	
 	// Set default camera transform to -5 units
-	mat4_get_identity(camera_transform_3d);
+	mat4_identity(camera_transform_3d);
 	mat4_translate(camera_transform_3d, 0, 0, -5);
 }
 
@@ -194,24 +194,24 @@ vec2_t orthographic_project_point(vec3_t pt3d) {
 	vec2_t pt2d = { .x = pt3d.x, .y = pt3d.y };
 
 	// Apply view transform
-	pt2d = vec2_mat3_multiply(pt2d, view_transform_2d);
+	pt2d = vec2_mat3_mul(pt2d, view_transform_2d);
 	return pt2d;
 }
 
 vec2_t perspective_project_point(vec3_t pt3d) {
 	// Apply 3d transforms
-	pt3d = vec3_mat4_multiply(pt3d, camera_transform_3d);
+	pt3d = vec3_mat4_mul(pt3d, camera_transform_3d);
 
 	vec2_t pt2d = { .x = pt3d.x / pt3d.z, .y = pt3d.y / pt3d.z };
 
 	// Apply view transform
-	pt2d = vec2_mat3_multiply(pt2d, view_transform_2d);
+	pt2d = vec2_mat3_mul(pt2d, view_transform_2d);
 
 	return pt2d;
 }
 
 vec3_t get_camera_position(void) {
 	vec3_t a = { 0, 0, 0 };
-	vec3_t b = vec3_mat4_multiply(a, camera_transform_3d);
+	vec3_t b = vec3_mat4_mul(a, camera_transform_3d);
 	return vec3_sub(a, b);
 }
