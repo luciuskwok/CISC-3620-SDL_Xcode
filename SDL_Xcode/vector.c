@@ -10,6 +10,16 @@
 
 #pragma mark - 2D Vector
 
+vec2_t vec2_make(float x, float y) {
+	vec2_t a = { .x = x, .y = y };
+	return a;
+}
+
+vec2_t vec2_zero(void) {
+	const static vec2_t zero = { 0, 0 };
+	return zero;
+}
+
 vec2_t vec2_add(vec2_t a, vec2_t b) {
 	vec2_t c = { a.x + b.x, a.y + b.y };
 	return c;
@@ -43,6 +53,16 @@ float vec2_length(vec2_t v) {
 
 #pragma mark - 3D Vector
 
+vec3_t vec3_make(float x, float y, float z) {
+	vec3_t a = { .x = x, .y = y, .z = z };
+	return a;
+}
+
+vec3_t vec3_zero(void) {
+	const static vec3_t zero = { 0, 0, 0 };
+	return zero;
+}
+
 vec3_t vec3_add(vec3_t a, vec3_t b) {
 	vec3_t c = { a.x + b.x, a.y + b.y, a.z + b.z };
 	return c;
@@ -67,8 +87,6 @@ float vec3_length(vec3_t v) {
     return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
-#pragma mark - Products
-
 vec3_t vec3_cross(vec3_t a, vec3_t b) {
 	vec3_t c;
 	c.x = a.y * b.z - a.z * b.y;
@@ -79,4 +97,16 @@ vec3_t vec3_cross(vec3_t a, vec3_t b) {
 
 float vec3_dot(vec3_t a, vec3_t b) {
 	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+}
+
+#pragma mark - Conversion
+
+vec3_t vec4_to_vec3(vec4_t a) {
+	vec3_t b = { a.x, a.y, a.z };
+	return b;
+}
+
+vec4_t vec3_to_vec4(vec3_t a) {
+	vec4_t b = { a.x, a.y, a.z, 1 };
+	return b;
 }

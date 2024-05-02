@@ -9,16 +9,16 @@
 #include <math.h>
 
 
-uint32_t color_from_rgba_int(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+color_abgr_t color_from_rgba_int(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
 	return ((uint32_t)a << 24) | ((uint32_t)b << 16) | ((uint32_t)g << 8) | (uint32_t)r;
 }
 
-uint32_t color_from_rgba_double(double r, double g, double b, double a) {
+color_abgr_t color_from_rgba_double(double r, double g, double b, double a) {
 	return ((uint32_t)(a * 255.0) << 24) | ((uint32_t)(b * 255.0) << 16) |
 		((uint32_t)(g * 255.0) << 8) | (uint32_t)(r * 255.0);
 }
 
-uint32_t blend_color(uint32_t x, uint32_t y) {
+color_abgr_t blend_color(color_abgr_t x, color_abgr_t y) {
 	// This function blends y on top of x, ignoring the alpha of x
 	
 	// Decompose into channels
@@ -45,7 +45,7 @@ uint32_t blend_color(uint32_t x, uint32_t y) {
 	return color_from_rgba_int((uint8_t)zr, (uint8_t)zg, (uint8_t)zb, 255);
 }
 
-uint32_t color_from_hsv(double h, double s, double v, double a) {
+color_abgr_t color_from_hsv(double h, double s, double v, double a) {
 	// Adapted from: https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both
 	
 	double hh, p, q, t, ff;

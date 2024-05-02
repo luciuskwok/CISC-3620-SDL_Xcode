@@ -2,15 +2,13 @@
 
 #include "color.h"
 #include "drawing.h"
-#include "cube_mesh.h"
+#include "mesh.h"
 #include "vector.h"
 #include "matrix.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdint.h>
-#include <math.h>
 
 #include <SDL2/SDL.h>
 #ifdef __EMSCRIPTEN__
@@ -25,6 +23,7 @@
 // Globals
 bool is_running = true;
 uint64_t last_update_time = 0;
+mesh_t *cube = NULL;
 
 #pragma mark - Game Loop
 
@@ -46,35 +45,37 @@ void process_keyboard_input(void) {
 				is_running = false;
 				break;
 			case SDLK_0:
-				cube_reset_transform();
+				// Reset both angular momentum and rotation
+				cube->angular_momentum = vec3_zero();
+				cube->rotation = mat4_identity();
 				break;
 			case SDLK_e:
 				// Roll right
-				cube_add_roll(1.0f);
+				mesh_add_roll(cube, 1.0f);
 				break;
 			case SDLK_q:
 				// Roll left
-				cube_add_roll(-1.0f);
+				mesh_add_roll(cube, -1.0f);
 				break;
 			case SDLK_w:
 				// Pitch down
-				cube_add_pitch(1.0f);
+				mesh_add_pitch(cube, 1.0f);
 				break;
 			case SDLK_s:
 				// Pitch up
-				cube_add_pitch(-1.0f);
+				mesh_add_pitch(cube, -1.0f);
 				break;
 			case SDLK_a:
 				// Yaw left
-				cube_add_yaw(1.0f);
+				mesh_add_yaw(cube, 1.0f);
 				break;
 			case SDLK_d:
 				// Yaw right
-				cube_add_yaw(-1.0f);
+				mesh_add_yaw(cube, -1.0f);
 				break;
 			case SDLK_SPACE:
 				// Stop movement
-				cube_reset_momentum();
+				cube->angular_momentum = vec3_zero();
 				break;
 		}
 		break;
@@ -82,15 +83,22 @@ void process_keyboard_input(void) {
 }
 
 void update_state(uint64_t delta_time) {
-	update_cube(delta_time);
+	double delta_seconds = (double)delta_time / 1000.0;
+
+	mesh_update(cube, delta_seconds);
+	
+	// Update cube colors
+	double hue = fmod(cube->lifetime * 7.5, 360);
+	cube->line_color = color_from_hsv(hue, 1.0, 1.0, 1.0);
+	cube->point_color = color_from_hsv(fmod(hue + 60, 360), 1.0, 1.0, 0.5);
 }
 
 void run_render_pipeline(void) {
-	set_fill_color(BLACK_COLOR);
+	fill_color = ABGR_BLACK;
 	fill_screen();
 	
 	// Draw cube
-	draw_cube();
+	mesh_draw(cube);
 	
 	render_to_screen();
 }
@@ -127,7 +135,7 @@ int main(int argc, const char * argv[]) {
 	if (!init_screen(1280, 720, 1)) return 0;
 	
 	init_projection();
-	init_cube();
+	cube = mesh_new_cube();
 	
 	last_update_time = SDL_GetTicks64();
 	

@@ -7,11 +7,11 @@
 
 #include "drawing.h"
 #include "color.h"
-#include "matrix.h"
-#include "cube_mesh.h"
+#include "mesh.h"
 #include "vector.h"
 
 #include <SDL2/SDL.h>
+#include <stdio.h>
 
 
 // Globals for SDL
@@ -25,8 +25,8 @@ int screen_h;
 size_t screen_pitch;
 
 // Drawing context
-uint32_t line_color;
-uint32_t fill_color;
+color_abgr_t line_color;
+color_abgr_t fill_color;
 vec2_t cursor;
 
 // Transforms
@@ -39,14 +39,14 @@ mat4_t camera_transform_3d;
 
 void init_projection(void) {
 	// Set default view transform to center on and scale to screen
-	mat3_identity(view_transform_2d);
-	mat3_translate(view_transform_2d, screen_w / 2, screen_h / 2);
-	float scale2d = screen_h;
-	mat3_scale(view_transform_2d, scale2d, scale2d);
+	vec2_t st = { .x = screen_w / 2, .y = screen_h / 2 };
+	view_transform_2d = mat3_translate(mat3_identity(), st);
+	vec2_t s = { .x = screen_h, .y = screen_h } ;
+	view_transform_2d = mat3_scale(view_transform_2d, s);
 	
 	// Set default camera transform to -5 units
-	mat4_identity(camera_transform_3d);
-	mat4_translate(camera_transform_3d, 0, 0, -5);
+	vec3_t ct = { .x = 0, .y = 0, .z = -5 };
+	camera_transform_3d = mat4_translate(mat4_identity(), ct);
 }
 
 bool init_screen(int width, int height, int scale) {
@@ -85,7 +85,7 @@ bool init_screen(int width, int height, int scale) {
 		fprintf(stderr, "malloc() failed!\n");
 		return false;
 	}
-	set_fill_color(BLACK_COLOR);
+	fill_color = ABGR_BLACK;
 	fill_screen();
 	
 	// Set up the renderer
@@ -127,14 +127,6 @@ void fill_screen(void) {
 	}
 }
 
-void set_line_color(uint32_t color) {
-	line_color = color;
-}
-
-void set_fill_color(uint32_t color) {
-	fill_color = color;
-}
-
 void move_to(vec2_t a) {
 	cursor = a;
 }
@@ -167,7 +159,7 @@ void fill_centered_rect(int x, int y, int w, int h) {
 	fill_rect(x - w / 2, y - h / 2, w, h);
 }
 
-void set_pixel(int x, int y, uint32_t color) {
+void set_pixel(int x, int y, color_abgr_t color) {
 	if (x < 0 || x >= screen_w) return;
 	if (y < 0 || y >= screen_h) return;
 	
@@ -181,9 +173,6 @@ void set_pixel(int x, int y, uint32_t color) {
 
 #pragma mark - Getters
 
-vec2_t get_cursor(void) { return cursor; }
-uint32_t get_line_color(void) { return line_color; }
-uint32_t get_fill_color(void) { return fill_color; }
 int get_screen_width(void) { return screen_w; }
 int get_screen_height(void) { return screen_h; }
 

@@ -10,13 +10,16 @@
 
 #include <stdint.h>
 
+
+typedef uint32_t color_abgr_t;
+
 // NOTE: pixel format is ABGR
 
-#define BLACK_COLOR (0xFF000000)
-#define WHITE_COLOR (0xFFFFFFFF)
+#define ABGR_BLACK (0xFF000000)
+#define ABGR_WHITE (0xFFFFFFFF)
 
-uint32_t blend_color(uint32_t x, uint32_t y);
+color_abgr_t blend_color(color_abgr_t x, color_abgr_t y);
 
-uint32_t color_from_hsv(double h, double s, double v, double a);
+color_abgr_t color_from_hsv(double h, double s, double v, double a);
 
 #endif /* color_h */
